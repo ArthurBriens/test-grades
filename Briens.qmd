@@ -38,6 +38,20 @@ students |>
 
 
 ```{r}
+library(ggplot2)
+group_count <- students %>% count(Group)
+
+ggplot(group_count, aes(x = Group, y = n)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Number of Students per Group",
+    x = "Group",
+    y = "Number of Students"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1))
+
 ```
 
 
