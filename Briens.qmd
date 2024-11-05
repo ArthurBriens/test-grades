@@ -12,15 +12,28 @@ data <- read_csv("grades.csv")
 
 
 ```{r}
+library(tidyr)
+library(dplyr)
+total_num <- data %>%
+  select(4:23) %>%
+  summarise(n= sum(!is.na(.))) %>%
+  pull(n)
 
+print(paste("There are", total_num, "grades"))
 ```
 
 
 ```{r}
+stud_n <- data |> distinct(Id) |> summarise(n = n())
+print(paste('There are', stud_n, 'students.'))
 ```
 
 
 ```{r}
+students <- data %>% select(Id, Group) %>% distinct() 
+students |>
+  slice_tail(n = 5) |>
+  knitr::kable()
 ```
 
 
