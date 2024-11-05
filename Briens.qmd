@@ -6,6 +6,7 @@ format: html
 Q1
 
 ```{r}
+#| echo: false
 library(readr)
 data <- read_csv("grades.csv")
 ```
@@ -38,6 +39,7 @@ students |>
 
 Q5
 ```{r}
+#| echo: false
 library(ggplot2)
 group_count <- students %>% count(group)
 
@@ -56,6 +58,7 @@ ggplot(group_count, aes(x = group, y = n)) +
 
 Q6
 ```{r}
+#| echo: false
 WaD <- data %>% filter(course =="Warfare and Diplomacy")
 group_averages <- WaD %>%
   group_by(group) %>%
@@ -85,6 +88,7 @@ ggplot(group_averages, aes(x = group, y = average_grade)) +
 
 Q7
 ```{r}
+#| echo: false
 ggplot(data, aes(x = factor(module), y = grade)) +
   geom_boxplot(alpha = 0.7, fill = "lightblue") +
   geom_jitter(width = 0.2, alpha = 0.5, color = "darkblue") +
@@ -106,6 +110,7 @@ ggplot(data, aes(x = factor(module), y = grade)) +
 
 Q8
 ```{r}
+#|echo: false
 student_grade_counts <- data %>%
   group_by(id, group) %>%
   summarise(
@@ -132,17 +137,29 @@ summary_stats |>
 
 
 ```{r}
+#| echo: false
+art_symbolism_counts <- data %>%
+  filter(course=="Art and Symbolism") %>%
+  group_by(id, group) %>%
+  summarise("Number of grades" = n())
 ```
 
-
+Q9
 ```{r}
+#| echo: false
+art_symbolism_counts %>%
+  slice_head(n = 5) %>%
+  knitr::kable()
 ```
 
-
+Q10
 ```{r}
+#| echo: false
+ggplot(data = art_symbolism_counts, aes(x=`Number of grades`)) +
+  geom_histogram()
 ```
 
-
+Q11
 ```{r}
 ```
 
