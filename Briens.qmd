@@ -9,39 +9,39 @@ Q1
 library(readr)
 data <- read_csv("grades.csv")
 ```
-
+Q2
 
 ```{r}
 library(tidyr)
 library(dplyr)
 total_num <- data %>%
-  select(4:23) %>%
+  select(grade) %>%
   summarise(n= sum(!is.na(.))) %>%
   pull(n)
 
 print(paste("There are", total_num, "grades"))
 ```
 
-
+Q3
 ```{r}
-stud_n <- data |> distinct(Id) |> summarise(n = n())
+stud_n <- data |> distinct(id) |> summarise(n = n())
 print(paste('There are', stud_n, 'students.'))
 ```
 
-
+Q4
 ```{r}
-students <- data %>% select(Id, Group) %>% distinct() 
+students <- data %>% select(id, group) %>% distinct() 
 students |>
   slice_tail(n = 5) |>
   knitr::kable()
 ```
 
-
+Q5
 ```{r}
 library(ggplot2)
-group_count <- students %>% count(Group)
+group_count <- students %>% count(group)
 
-ggplot(group_count, aes(x = Group, y = n)) +
+ggplot(group_count, aes(x = group, y = n)) +
   geom_bar(stat = "identity") +
   labs(
     title = "Number of Students per Group",
@@ -54,16 +54,80 @@ ggplot(group_count, aes(x = Group, y = n)) +
 
 ```
 
-
+Q6
 ```{r}
+WaD <- data %>% filter(course =="Warfare and Diplomacy")
+group_averages <- WaD %>%
+  group_by(group) %>%
+  summarize(
+    average_grade = mean(grade, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+ggplot(group_averages, aes(x = group, y = average_grade)) +
+  # Use geom_col for bar plot
+  geom_col(fill = "steelblue", width = 0.7) +
+  labs(
+    title = "Average Grades in Warfare and Diplomacy by Group",
+    x = "Group",
+    y = "Average Grade"
+  ) +
+  geom_text(
+    aes(label = round(average_grade, 1)),
+    vjust = -0.5
+  ) +
+  scale_y_continuous(
+    limits = function(x) c(0, max(x) * 1.1)
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 0, hjust = 0.5))
 ```
 
-
+Q7
 ```{r}
+ggplot(data, aes(x = factor(module), y = grade)) +
+  geom_boxplot(alpha = 0.7, fill = "lightblue") +
+  geom_jitter(width = 0.2, alpha = 0.5, color = "darkblue") +
+  labs(
+    title = "Grade Distribution by Module",
+    x = "Module",
+    y = "Grade"
+  ) +
+  stat_summary(
+    fun = mean,
+    geom = "point",
+    shape = 23,
+    size = 3,
+    fill = "red",
+    color = "red"
+  ) +
+  theme_minimal()
 ```
 
-
+Q8
 ```{r}
+student_grade_counts <- data %>%
+  group_by(id, group) %>%
+  summarise(
+    number_of_grades = n(),
+    .groups = 'drop'
+  ) %>%
+  arrange(id) 
+
+student_grade_counts %>%
+  slice_tail(n = 5) %>%
+  knitr::kable()
+
+summary_stats <- student_grade_counts %>%
+  summarise(
+    Minimum = min(number_of_grades),
+    Maximum = max(number_of_grades),
+    Average = round(mean(number_of_grades), 2),
+    Median = median(number_of_grades)
+  )
+summary_stats |>
+  slice_tail(n = 5) |>
+  knitr::kable()
 ```
 
 
